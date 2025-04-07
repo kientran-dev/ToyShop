@@ -1,44 +1,42 @@
 package com.kiendz.toyshop_website.entity;
 
+import com.kiendz.toyshop_website.common.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class Order extends AbstractEntity<String> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    String orderId;
+    @Column(name = "order_date", nullable = false)
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
+    LocalDateTime orderDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @Column(name = "status", nullable = false)
+    OrderStatus status;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "coupon_id", nullable = false)
+    Coupon coupon;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     Customer customer;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "toy_id")
-    List<Toy> products;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id", nullable = false)
+    PaymentMethod paymentMethod;
 
-    @Column(name = "total_price")
-    double totalPrice;
-
-    @Column(name = "oder_date")
-    LocalDateTime orderDate;
-
-    @Column(name = "status")
-    String status;
-
-    @Column(name = "payment_method")
-    String paymentMethod;
-
-    @Column(name = "shipping_address")
-    String shippingAddress;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "delivery_id", nullable = false)
+    DeliveryMethod deliveryMethod;
 }

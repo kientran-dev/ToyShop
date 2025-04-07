@@ -7,47 +7,21 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
-
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "toys")
 @Getter
 @Setter
-@Builder//Dùng @Builder sẽ giúp việc tạo đối tượng Toy trở nên linh hoạt và dễ đọc hơn.
-@NoArgsConstructor
-@AllArgsConstructor
+@MappedSuperclass
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Toy {
+public class AbstractEntity<T extends Serializable> implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    String id;
+    @Column(name = "id") //Các entity extends AbstractEntity đều có collumn tên là id
+    T id;
 
-    @Column(name = "name", nullable = false)
-    String name;
-
-    @Column(name = "price")
-    double price;
-
-    @Column(name = "stock")
-    int stock;
-
-    @Column(name = "description", columnDefinition = "MEDIUMTEXT")
-    String description;
-
-    @Column(name = "material")
-    String material;
-
-    @Column(name = "origin")
-    String origin;
-
-    @Column(name = "age")
-    int age;
-
-    @Column(name = "image")
-    String image;
-
+    //Audit
     @Column(name = "created_by")
     @CreatedBy
     String createdBy;
@@ -65,3 +39,8 @@ public class Toy {
     LocalDateTime updatedAt;
 
 }
+// @MappedSuperclass trong Spring (đặc biệt là trong JPA/Hibernate)
+// được sử dụng để định nghĩa một lớp cha chứa các trường (fields)
+// và mapping (liên kết) chung cho các lớp entity khác
+//Các Audit dùng để theo dõi thông tin về người tạo,
+// người cập nhật, thời gian tạo và thời gian cập nhật của các entity.

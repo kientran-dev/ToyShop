@@ -6,26 +6,19 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table
-@Data
+@Table(name = "carts")
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cart {
+public class Cart extends AbstractEntity<String> {
 
-    @Id
-    @Column(name = "id")
-    String id;
-
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
     Customer customer;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "toy_id")
-    List<Toy> products;
-
-    @Column(name = "total_price")
-    double totalPrice;
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
+    List<CartItem> cartItems;
 }
 
