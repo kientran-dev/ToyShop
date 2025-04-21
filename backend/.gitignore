@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Bỏ qua các thư mục hoặc tệp không phải mã Java
+vendor/* linguist-vendored
+docs/* linguist-documentation
+*.md linguist-documentation
+*.txt linguist-documentation
