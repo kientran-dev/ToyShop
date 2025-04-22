@@ -16,7 +16,7 @@ public class Cart extends AbstractEntity<String> {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
-    Customer customer;
+    User user;
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
     List<CartItem> cartItems;

@@ -2,23 +2,23 @@ package com.kiendz.toyshop_website.entity;
 
 import com.kiendz.toyshop_website.common.Gender;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import jakarta.validation.constraints.Email;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "users")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Customer extends AbstractEntity<String> {
+public class User extends AbstractEntity<String> {
 
     @Column(name = "email")
     @NotBlank(message = "Email is mandatory")
@@ -42,4 +42,7 @@ public class Customer extends AbstractEntity<String> {
     @Column(name = "phone")
     String phone;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    Role role;
 }

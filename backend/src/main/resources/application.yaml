@@ -1,15 +1,19 @@
 server:
   port: 8080
 spring:
-    datasource:
-        url: jdbc:mysql://localhost:3306/aishiba
-        username: root
-        password: 123456789
-        driver-class-name: com.mysql.cj.jdbc.Driver
-    jpa:
-      show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/aishiba
+    username: root
+    password: 123456789
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
       hibernate:
-        ddl-auto: update
-      properties:
-        hibernate:
-          format_sql: true
+        format_sql: true
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
