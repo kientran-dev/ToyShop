@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/api/v1")
 @Slf4j
-
-
 public class ToyController {
     @GetMapping("/toys")
     ApiResponse<PageResponse<ToyResponse>> getALlToys(

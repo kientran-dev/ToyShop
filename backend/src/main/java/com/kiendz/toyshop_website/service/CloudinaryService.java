@@ -1,8 +1,12 @@
 package com.kiendz.toyshop_website.service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.kiendz.toyshop_website.entity.User;
+import com.kiendz.toyshop_website.exception.AppException;
+import com.kiendz.toyshop_website.exception.ErrorCode;
 import com.kiendz.toyshop_website.repository.UserRepository;
+import com.kiendz.toyshop_website.security.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -24,8 +28,8 @@ public class CloudinaryService {
 
     @PreAuthorize("isAuthenticated()")
     public String getImage() {
-        String currentLogin = SecurityUtils.getCurrentUserLogin()
-                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_INVALID));
+        String currentLogin = SecurityUtils.getCurrentLogin()
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         User user = userRepository.findByEmail(currentLogin)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
