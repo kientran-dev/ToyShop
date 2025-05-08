@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo hàng hóa</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fc;
+            color: #333;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: #f1f4f9;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            padding: 20px 10px;
+            overflow-y: hidden;
+        }
+
+        .section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #4e73df;
+        }
+
+        .section label {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 13px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .chart-container {
+            margin-bottom: 40px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-container h3 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+
+        details {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        summary {
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            list-style: none;
+        }
+
+        details[open] summary::after {
+            content: "\25BC";
+            float: right;
+        }
+
+        summary::after {
+            content: "\25B6";
+            float: right;
+        }
+
+        input[type="text"],
+        input[type="search"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 13px;
+            display: block;
+        }
+
+        .dropdown label {
+            display: block;
+            margin: 5px 0;
+            font-size: 13px;
+        }
+
+        .dropdown ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .dropdown ul li {
+            padding: 6px 0;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .dropdown ul li:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* === Tùy chỉnh radio và checkbox xanh lá === */
+        input[type="radio"],
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: #fff;
+            margin: 0 6px 0 0;
+            font: inherit;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            display: inline-grid;
+            place-content: center;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            border-radius: 4px;
+        }
+
+        input[type="radio"]::before,
+        input[type="checkbox"]::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em #22c55e;
+            /* Xanh lá */
+        }
+
+        input[type="radio"]:checked::before {
+            transform: scale(1);
+            border-radius: 50%;
+        }
+
+        input[type="checkbox"]:checked::before {
+            transform: scale(1);
+            border-radius: 2px;
+        }
+
+        input[type="radio"]:focus,
+        input[type="checkbox"]:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="sidebar">
+    <h2 style="margin-left: 10px;">Báo cáo hàng hóa</h2>
+
+    <!-- Kiểu hiển thị -->
+    <div class="section">
+        <h3>Kiểu hiển thị</h3>
+        <label><input type="radio" name="view" value="chart" checked> Biểu đồ</label>
+        <label><input type="radio" name="view" value="report"> Báo cáo</label>
+        <label><input type="checkbox" name="group-same"> Gộp hàng hóa cùng loại</label>
+    </div>
+
+    <!-- Mối quan tâm -->
+    <div class="section">
+        <h3>Mối quan tâm</h3>
+        <label><input type="radio" name="interest" value="ban" checked> Bán hàng</label>
+        <label><input type="radio" name="interest" value="loi"> Lợi nhuận</label>
+        <label><input type="radio" name="interest" value="kho"> Giá trị kho</label>
+        <label><input type="radio" name="interest" value="xnt"> Xuất nhập tồn</label>
+        <label><input type="radio" name="interest" value="xntct"> Xuất nhập tồn chi tiết</label>
+        <label><input type="radio" name="interest" value="huy"> Xuất hủy</label>
+        <label><input type="radio" name="interest" value="nv"> Nhân viên theo hàng bán</label>
+        <label><input type="radio" name="interest" value="kh"> Khách theo hàng bán</label>
+        <label><input type="radio" name="interest" value="ncc"> NCC theo hàng nhập</label>
+    </div>
+
+    <!-- Thời gian -->
+    <div class="section">
+        <h3>Thời gian</h3>
+        <label><input type="radio" name="time" value="week" checked> Tuần này</label>
+        <label><input type="radio" name="time" value="custom"> Lựa chọn khác <input type="date" id="customDate"></label>
+    </div>
+
+
+    <details class="dropdown">
+        <summary>Hàng hóa</summary>
+        <input type="text" id="hanghoaInput" placeholder="Theo mã, tên hàng">
+    </details>
+
+    <details class="dropdown">
+        <summary>Loại hàng</summary>
+        <label><input type="checkbox" name="loaihang" value="combo"> Combo - đóng gói</label>
+        <label><input type="checkbox" name="loaihang" value="hanghoa"> Hàng hóa</label>
+        <label><input type="checkbox" name="loaihang" value="dichvu"> Dịch vụ</label>
+    </details>
+
+    <details class="dropdown">
+        <summary>Nhóm hàng</summary>
+        <input type="search" id="nhomhangInput" placeholder="Tìm kiếm nhóm hàng">
+        <ul>
+            <li>Tất cả</li>
+            <li>Đồ dùng đựng Card</li>
+            <li>Túi, cặp đựng tài liệu</li>
+            <li>Gọt bút chì</li>
+            <li>Nhỏ ghim</li>
+            <li>Kéo</li>
+        </ul>
+    </details>
+</div>
+
+<div class="content">
+    <div class="chart-container">
+        <h3>Top 10 sản phẩm doanh thu cao nhất (đã trừ trả hàng)</h3>
+        <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <h3>Top 10 sản phẩm bán chạy theo số lượng (đã trừ trả hàng)</h3>
+        <canvas id="salesChart"></canvas>
+    </div>
+</div>
+
+<script>
+    // Ghi nhớ và khôi phục lựa chọn
+    // Reset localStorage lần đầu nếu cần (chỉ chạy 1 lần duy nhất)
+    if (!localStorage.getItem('initialized')) {
+        localStorage.clear();
+        localStorage.setItem('initialized', 'true');
+    }
+
+    // Ghi nhớ và khôi phục lựa chọn
+    document.querySelectorAll('input').forEach(el => {
+        const key = 'saved-' + (el.name || el.id);
+
+        if (el.type === 'radio' || el.type === 'checkbox') {
+            const stored = localStorage.getItem(key);
+            if (stored !== null) {
+                el.checked = stored === 'true';
+            }
+            el.addEventListener('change', () => {
+                document.querySelectorAll(`input[name='${el.name}']`).forEach(e => {
+                    localStorage.setItem('saved-' + (e.name || e.id), e.checked);
+                });
+            });
+        } else if (el.type === 'text' || el.type === 'search' || el.type === 'date') {
+            el.value = localStorage.getItem(key) || '';
+            el.addEventListener('input', () => localStorage.setItem(key, el.value));
+        }
+    });
+
+
+    const revenueData = {
+        labels: ['Cặp da khóa số', 'Ví nhỏ đựng card Synapse'],
+        datasets: [{
+            label: 'Doanh thu (VND)',
+            data: [86250000, 15000000],
+            backgroundColor: 'rgba(0, 123, 255, 1)',
+            borderRadius: 6,
+            barThickness: 80
+        }]
+    };
+
+    const salesData = {
+        labels: ['Cặp da khóa số', 'Ví nhỏ đựng card Synapse'],
+        datasets: [{
+            label: 'Số lượng bán',
+            data: [69, 63],
+            backgroundColor: 'rgba(0, 123, 255, 1)',
+            borderRadius: 6,
+            barThickness: 80
+        }]
+    };
+
+    const options = {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+            legend: {display: false},
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        const value = context.raw.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+                        return `${context.label}: ${value}`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {ticks: {font: {size: 14}}, grid: {drawBorder: false}},
+            y: {ticks: {font: {size: 14}}, grid: {drawBorder: false}}
+        }
+    };
+
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'bar',
+        data: revenueData,
+        options: options
+    });
+
+    new Chart(document.getElementById('salesChart'), {
+        type: 'bar',
+        data: salesData,
+        options: options
+    });
+</script>
+</body>
+
+</html>

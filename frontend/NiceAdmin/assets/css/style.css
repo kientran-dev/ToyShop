@@ -603,7 +603,7 @@ h6 {
   top: 60px;
   left: 0;
   bottom: 0;
-  width: 300px;
+    width: 275px;
   z-index: 996;
   transition: all 0.3s;
   padding: 20px;
@@ -686,7 +686,7 @@ h6 {
   font-size: 15px;
   font-weight: 600;
   color: #4154f1;
-  transition: 0.3;
+    transition: 0.3s;
   background: #f6f9ff;
   padding: 10px 15px;
   border-radius: 4px;
@@ -737,7 +737,6 @@ h6 {
   font-size: 14px;
   font-weight: 600;
   color: #012970;
-  transition: 0.3;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
 }
@@ -1280,4 +1279,14 @@ h6 {
   text-align: center;
   font-size: 13px;
   color: #012970;
+}
+
+/* Login page specific styles */
+.login-page {
+    background-image: url(../img/background.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    backdrop-filter: blur(2.5px);
 }

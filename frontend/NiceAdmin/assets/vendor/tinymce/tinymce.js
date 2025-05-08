@@ -6400,12 +6400,12 @@
       let count = 0;
       Tools.each(dom.select(name), node => {
         if (node.getAttribute('data-mce-bogus') === 'all') {
-          return;
+
         } else if (node === element) {
           return false;
         } else {
           count++;
-          return;
+
         }
       });
       return count;

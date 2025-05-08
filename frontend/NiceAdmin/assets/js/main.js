@@ -1,10 +1,10 @@
 /**
-* Template Name: NiceAdmin
-* Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-* Updated: Apr 20 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
+ * Template Name: NiceAdmin
+ * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
+ * Updated: Apr 20 2024 with Bootstrap v5.3.3
+ * Author: BootstrapMade.com
+ * License: https://bootstrapmade.com/license/
+ */
 
 (function() {
   "use strict";
@@ -33,7 +33,7 @@
   }
 
   /**
-   * Easy on scroll event listener 
+   * Easy on scroll event listener
    */
   const onscroll = (el, listener) => {
     el.addEventListener('scroll', listener)
@@ -144,21 +144,21 @@
           ["bold", "italic", "underline", "strike"],
           [{
               color: []
-            },
+          },
             {
               background: []
             }
           ],
           [{
               script: "super"
-            },
+          },
             {
               script: "sub"
             }
           ],
           [{
               list: "ordered"
-            },
+          },
             {
               list: "bullet"
             },
@@ -202,7 +202,7 @@
     link_list: [{
         title: 'My page 1',
         value: 'https://www.tiny.cloud'
-      },
+    },
       {
         title: 'My page 2',
         value: 'http://www.moxiecode.com'
@@ -211,7 +211,7 @@
     image_list: [{
         title: 'My page 1',
         value: 'https://www.tiny.cloud'
-      },
+    },
       {
         title: 'My page 2',
         value: 'http://www.moxiecode.com'
@@ -220,7 +220,7 @@
     image_class_list: [{
         title: 'None',
         value: ''
-      },
+    },
       {
         title: 'Some class',
         value: 'class-name'
@@ -267,16 +267,104 @@
   var needsValidation = document.querySelectorAll('.needs-validation')
 
   Array.prototype.slice.call(needsValidation)
-    .forEach(function(form) {
-      form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
+      .forEach(function (form) {
+          form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                  event.preventDefault()
+                  event.stopPropagation()
+              }
 
-        form.classList.add('was-validated')
-      }, false)
-    })
+              form.classList.add('was-validated')
+          }, false)
+      })
+
+    /**
+     * Login form validation
+     */
+    const loginForm = select('form.needs-validation');
+    if (loginForm) {
+        const validateInput = (input, regex, minLength, messages) => {
+            const value = input.value.trim();
+            const feedbackElement = input.nextElementSibling;
+
+            if (!value) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                feedbackElement.textContent = messages.required;
+                return false;
+            } else if (value.length < minLength) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                feedbackElement.textContent = messages.minLength;
+                return false;
+            } else if (!regex.test(value)) {
+                input.classList.add('is-invalid');
+                input.classList.remove('is-valid');
+                feedbackElement.textContent = messages.pattern;
+                return false;
+            } else {
+                input.classList.remove('is-invalid');
+                input.classList.add('is-valid');
+                return true;
+            }
+        };
+
+        // Username validation config
+        const usernameConfig = {
+            regex: /^[a-zA-Z0-9_]{3,20}$/,
+            minLength: 3,
+            messages: {
+                required: 'Username is required',
+                minLength: 'Username must be at least 3 characters',
+                pattern: 'Username must contain only letters, numbers and underscore'
+            }
+        };
+
+        // Password validation config
+        const passwordConfig = {
+            regex: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+            minLength: 8,
+            messages: {
+                required: 'Password is required',
+                minLength: 'Password must be at least 8 characters',
+                pattern: 'Password must contain at least one letter and one number'
+            }
+        };
+
+        // Real-time validation for username
+        select('#yourUsername').addEventListener('input', function () {
+            validateInput(this, usernameConfig.regex, usernameConfig.minLength, usernameConfig.messages);
+        });
+
+        // Real-time validation for password
+        select('#yourPassword').addEventListener('input', function () {
+            validateInput(this, passwordConfig.regex, passwordConfig.minLength, passwordConfig.messages);
+        });
+
+        // Form submission validation
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const usernameValid = validateInput(
+                select('#yourUsername'),
+                usernameConfig.regex,
+                usernameConfig.minLength,
+                usernameConfig.messages
+            );
+
+            const passwordValid = validateInput(
+                select('#yourPassword'),
+                passwordConfig.regex,
+                passwordConfig.minLength,
+                passwordConfig.messages
+            );
+
+            if (usernameValid && passwordValid) {
+                console.log('Form is valid - submitting...');
+                this.submit();
+            }
+        });
+    }
 
   /**
    * Initiate Datatables
@@ -288,7 +376,7 @@
       columns: [{
           select: 2,
           sortSequence: ["desc", "asc"]
-        },
+      },
         {
           select: 3,
           sortSequence: ["desc"]
